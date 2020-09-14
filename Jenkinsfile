@@ -1,78 +1,51 @@
+
 pipeline {
-  agent any
-  stages {
-    stage('Lint HTML') {
-      steps {
-        sh 'tidy -q -e *.html'
-      }
-    }
-
-    stage('Build Docker Image') {
-      steps {
-        script {
-          app = docker.build(DOCKER_IMAGE_NAME)
-          app.inside {
-            sh 'echo Hello, Nginx!'
-          }
+     agent any
+     stages {
+         stage('Build') {
+              steps {
+                  sh 'echo Building...'
+              }
+         }
+         stage('Lint HTML') {
+              steps {
+                  sh 'tidy -q -e *.html'
+              }
+         }
+         stage('Build Docker Image') {
+              steps {
+                  sh 'docker build -t  capstone-project .'
+              }
+         }
+         stage('Push Docker Image') {
+              steps {
+                  withDockerRegistry([url: "", credentialsId: "docker-hub"]) {
+                      sh "docker tag capstone-project orinaoisera22/capstone-project"
+                      sh 'docker push orinaoisera22/capstone-project'
+            
+                  }
+              }
+         }
+         stage('Deploying') {
+              steps{
+                  echo 'Deploying to AWS...'
+                  withAWS(credentials: 'aws', region: 'us-west-2') {
+                      sh "aws eks --region us-east-2 update-kubeconfig --name Capstone-infra"
+                      sh "kubectl config use-context arn:aws:eks:us-east-2:815724397517:cluster/Capstone-infra"
+                      sh "kubectl set image deployments/capstone-project-cloud-devops capstone-project-cloud-devops=sabbir33/capstone-project-cloud-devops:latest"
+                      sh "kubectl apply -f deployment/deployment.yml"
+                      sh "kubectl get nodes"
+                      sh "kubectl get deployment"
+                      sh "kubectl get pod -o wide"
+                      sh "kubectl get service/capstone-project-cloud-devops"
+                  }
+              }
         }
-
-      }
-    }
-
-    stage('Push Docker Image') {
-      steps {
-        script {
-          docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
-          }
+        stage("Cleaning up") {
+              steps{
+                    echo 'Cleaning up...'
+                    sh "docker system prune"
+              }
         }
-
-      }
-    }
-
-    stage('Deploy blue & Green container') {
-      steps {
-        sshagent(credentials: ['Project']) {
-          sh 'scp -o StrictHostKeyChecking=no  blue-controller.yaml green-controller.yaml blue-service.yaml  ubuntu@ip-172-31-26-144:/home/ubuntu/'
-          script {
-            try{
-              sh "ssh ubuntu@ip-172-31-26-144 sudo kubectl apply -f ."
-            }catch(error){
-              sh "ssh ubuntu@ip-172-31-26-144 sudo kubectl create -f ."
-            }
-          }
-
-        }
-
-      }
-    }
-
-    stage('Wait user approve') {
-      steps {
-        input 'Ready to redirect traffic to green?'
-      }
-    }
-
-    stage('Create the service in the cluster, redirect to green') {
-      steps {
-        sshagent(credentials: ['Project']) {
-          sh 'scp -o StrictHostKeyChecking=no green-service.yaml ubuntu@ip-172-31-26-144:/home/ubuntu/run/'
-          script {
-            try{
-              sh "ssh ubuntu@ip-172-31-26-144 sudo kubectl apply -f ."
-            }catch(error){
-              sh "ssh ubuntu@ip-172-31-26-144 sudo kubectl create -f ."
-            }
-          }
-
-        }
-
-      }
-    }
-
-  }
-  environment {
-    DOCKER_IMAGE_NAME = 'medhat16/capstoneimage'
-  }
+     }
 }
