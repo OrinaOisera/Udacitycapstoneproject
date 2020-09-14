@@ -1,11 +1,8 @@
-eksctl create cluster \
---name cap \
---version 1.17 \
---region us-east-2 \
---nodegroup-name cap-nodes \
---nodes 4 \
---nodes-min 1 \
---nodes-max 5 \
---ssh-access \
---ssh-public-key jenkinsec2.pem \
---managed
+
+aws cloudformation create-stack \
+--stack-name cap \
+--template-body file://eks.yml \
+--parameters file://eks-params.json \
+--region=us-east-2 \
+--capabilities CAPABILITY_NAMED_IAM
+	

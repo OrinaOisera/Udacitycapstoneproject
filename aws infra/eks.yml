@@ -11,7 +11,7 @@ Parameters:
   EksClusterName:
     Type: String
     Description: The of the EKS cluster to be created
-    Default: "EKS-Infra"
+    Default: "EKS-Infrastructure"
  
   EksRoleName:
     Type: String
@@ -57,7 +57,7 @@ Resources:
       InternetGatewayId: !Ref InternetGateway
       VpcId: !Ref VPC
   
-#PublicSubnet------------------------------------------------
+#-------------PublicSubnets-----------------------
 
   PublicSubnetsRouteTable:
     Type: AWS::EC2::RouteTable
@@ -118,7 +118,7 @@ Resources:
       GroupDescription: Cluster communication with worker nodes
       VpcId: !Ref VPC
   
-#PrivateSubnet--------------------------------------------------
+#-----------------PrivateSubnets---------------------------------
 
   PrivateSubnet01:
     Type: AWS::EC2::Subnet
@@ -196,7 +196,7 @@ Resources:
       SubnetId: !Ref PrivateSubnet02
       RouteTableId: !Ref PrivateSubnet2RouteTable
 
-#---------------------------------------------------------------	  
+#------------------EKSS---------------------------------------------	  
   EKS:
     Type: AWS::EKS::Cluster
     DependsOn: EksRole
@@ -240,9 +240,9 @@ Resources:
         - t2.micro
       NodeRole: !GetAtt NodeRole.Arn
       ScalingConfig:
-        DesiredSize: 2
-        MinSize: 2
-        MaxSize: 2
+        DesiredSize: 4
+        MinSize: 1
+        MaxSize: 5
       Subnets:
         - !Ref PrivateSubnet01
         - !Ref PrivateSubnet02
@@ -273,7 +273,7 @@ Resources:
             Action:
               - 'sts:AssumeRole'
 
-
+#-----------------outputs---------------------------------
 Outputs:
 
   SubnetIds:
@@ -299,3 +299,4 @@ Outputs:
   NodeRole:
     Description: The node instance role
     Value: !GetAtt NodeRole.Arn
+
