@@ -1,0 +1,11 @@
+eksctl create cluster \
+--name cap \
+--version 1.17 \
+--region us-east-2 \
+--nodegroup-name cap-nodes \
+--nodes 4 \
+--nodes-min 1 \
+--nodes-max 5 \
+--ssh-access \
+--ssh-public-key jenkinsec2.pem \
+--managed
