@@ -3,6 +3,7 @@ pipeline {
     environment {
     registry = "orinaoisera22/capstone-project"
     registryCredential = "dockerhub"
+    ockerImage = ""
     }
      agent any
      stages {
@@ -17,19 +18,17 @@ pipeline {
               }
          }
          stage('Build Docker Image') {
-              steps {
-                  withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
-                  sh 'docker build -t  capstone-project .'
-                  }
+              script {
+              dockerImage = docker.build(registry)
+            }
               }
          }
          stage('Push Docker Image') {
               steps {
-                  withDockerRegistry([url:"", credentialsId: "docker"]) {
-                      sh "docker tag capstone-project orinaoisera22/capstone-project"
-                      sh 'docker push orinaoisera22/capstone-project'
-            
-                  }
+                 script {
+                docker.withRegistry('', registryCredential) {
+                        dockerImage.push()
+                    }
               }
          }
          stage('Deploying') {
