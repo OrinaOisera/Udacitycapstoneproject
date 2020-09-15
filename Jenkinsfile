@@ -28,9 +28,8 @@ pipeline {
          stage('Push Docker Image') {
              
               steps {
-                     script {
-                 docker.withRegistry('', registryCredential) {
-                        dockerImage.push()
+                     sh'sudo docker login --username orinaoisera22 --password-stdin < /home/ubuntu/pass.txt'
+                     sh'docker push orinaoisera22/capstone-project:latest'
                     }
               }
          }
