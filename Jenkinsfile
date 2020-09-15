@@ -25,7 +25,7 @@ pipeline {
          }
          stage('Push Docker Image') {
               steps {
-                   {  sh 'docker login --username orinaoisera22'
+                   {  sh "docker login --username orinaoisera22"
                       sh "docker tag capstone-project orinaoisera22/capstone-project"
                       sh 'docker push orinaoisera22/capstone-project'
             
