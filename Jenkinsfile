@@ -29,7 +29,7 @@ pipeline {
              
               steps {
                      sh'sudo docker login --username orinaoisera22 --password-stdin < /home/ubuntu/pass.txt'
-                     sh'docker push orinaoisera22/capstone-project:latest'
+                     sh'sudo docker push orinaoisera22/capstone-project:latest'
                     }
               }
          stage('Deploying') {
