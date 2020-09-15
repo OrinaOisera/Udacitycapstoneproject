@@ -2,7 +2,7 @@
 pipeline {
     environment {
     registry = "orinaoisera22/capstone-project"
-    registryCredential = "diockerhub"
+    registryCredential = "dockerhub"
     }
      agent any
      stages {
@@ -23,7 +23,7 @@ pipeline {
          }
          stage('Push Docker Image') {
               steps {
-                  withDockerRegistry([url: "https://registry.hub.docker.com", credentialsId: "diockerhub"]) {
+                  withDockerRegistry([url: "https://registry.hub.docker.com", credentialsId: "dockerhub"]) {
                       sh "docker tag capstone-project orinaoisera22/capstone-project"
                       sh 'docker push orinaoisera22/capstone-project'
             
