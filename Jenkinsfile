@@ -25,9 +25,11 @@ pipeline {
          }
          stage('Push Docker Image') {
               steps {
-                     sh "docker login --username orinaoisera22"
+                  withDockerRegistry([url:"", credentialsId: "dockerhub"]) {
                       sh "docker tag capstone-project orinaoisera22/capstone-project"
                       sh 'docker push orinaoisera22/capstone-project'
+            
+                  }
               }
          }
          stage('Deploying') {
