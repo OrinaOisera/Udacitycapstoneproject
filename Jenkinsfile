@@ -2,7 +2,7 @@
 pipeline {
     environment {
     registry = "orinaoisera22/capstone-project"
-    registryCredential = 'dockerhub’
+    registryCredential = "dockerhub"
     }
      agent any
      stages {
