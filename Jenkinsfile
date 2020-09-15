@@ -33,7 +33,6 @@ pipeline {
                     }
               }
          }
-         }
          stage('Deploying') {
               steps{
                   echo 'Deploying to AWS...'
