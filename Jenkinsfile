@@ -32,7 +32,6 @@ pipeline {
                      sh'docker push orinaoisera22/capstone-project:latest'
                     }
               }
-         }
          stage('Deploying') {
               steps{
                   echo 'Deploying to AWS...'
