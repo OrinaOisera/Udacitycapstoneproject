@@ -3,7 +3,7 @@ pipeline {
     environment {
     registry = "orinaoisera22/capstone-project"
     registryCredential = "dockerhub"
-    ockerImage = ""
+    dockerImage = ""
     }
      agent any
      stages {
@@ -36,7 +36,7 @@ pipeline {
          stage('Deploying') {
               steps{
                   echo 'Deploying to AWS...'
-                  withAWS(credentials: 'aws', region: 'us-west-2') {
+                  withAWS(credentials: 'new', region: 'us-west-2') {
                       sh "aws eks --region us-east-2 update-kubeconfig --name Capstone-infra"
                       sh "kubectl config use-context arn:aws:eks:us-east-2:815724397517:cluster/Capstone-infra"
                       sh "kubectl set image deployments/capstone-project-deployment  capstone-project-deployment=orinaoisera22/capstone-project:tagname"
