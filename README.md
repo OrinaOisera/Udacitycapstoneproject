@@ -1,5 +1,5 @@
 # Udacitycapstoneproject
-
+Repo: https://github.com/OrinaOisera/Udacitycapstoneproject
 
 #### Steps for Project Completion
 1. Create an EC2 Instance and Infrastucture using AWS Cloudformation
