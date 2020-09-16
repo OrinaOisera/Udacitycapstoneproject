@@ -47,12 +47,11 @@ pipeline {
                   withAWS(credentials: 'aws', region: 'us-east-2') {
                       sh "aws eks --region us-east-2 update-kubeconfig --name Capstone-infra2"
                       sh "kubectl config use-context arn:aws:eks:us-east-2:815724397517:cluster/Capstone-infra2"
-                      sh "kubectl set image orinaoisera22/capstone-project   capstone-project-deployment=orinaoisera22/capstone-project:latest"
-                      sh "kubectl apply -f deploy/deployment.yml"
+                      sh "kubectl apply -f deployment.yml"
                       sh "kubectl get nodes"
                       sh "kubectl get deployment"
                       sh "kubectl get pod -o wide"
-                      sh "kubectl get service/capstone-project-deployment"
+                      sh "kubectl get service/ deployment.apps/capstone-project"
                   }
               }
         }
