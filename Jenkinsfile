@@ -36,7 +36,7 @@ pipeline {
              
               steps {
                       withAWS(credentials: 'aws', region: 'us-east-2') {
-                          sh " aws eks --region us-east-2 update-kubeconfig --name Capstone-infra "
+                          sh " aws eks --region us-east-2 update-kubeconfig --name Capstone-infra1 "
                       }
                     }
               }
@@ -45,8 +45,8 @@ pipeline {
               steps{
                   echo 'Deploying to AWS...'
                   withAWS(credentials: 'aws', region: 'us-east-2') {
-                      sh "aws eks --region us-east-2 update-kubeconfig --name Capstone-infra"
-                      sh "kubectl config use-context arn:aws:eks:us-east-2:815724397517:cluster/Capstone-infra"
+                      sh "aws eks --region us-east-2 update-kubeconfig --name Capstone-infra1"
+                      sh "kubectl config use-context arn:aws:eks:us-east-2:815724397517:cluster/Capstone-infra1"
                       sh "kubectl set image deployments/capstone-project-deployment  capstone-project-deployment=orinaoisera22/capstone-project:latest"
                       sh "kubectl apply -f deploy/deployment.yml"
                       sh "kubectl get nodes"
